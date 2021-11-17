@@ -8,10 +8,12 @@ export default [
       {
         file: 'dist/index.js',
         format: 'cjs',
+        exports: 'default',
       },
       {
         file: 'dist/index.es.js',
         format: 'es',
+        exports: 'default',
         entryFileNames: '[name].es.js',
         chunkFileNames: '[name]-[hash].es.js',
       },
