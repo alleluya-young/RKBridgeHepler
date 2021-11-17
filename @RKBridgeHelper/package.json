@@ -1,0 +1,26 @@
+{
+  "name": "rk-jsbridge",
+  "version": "0.0.1",
+  "author": "alleluya_",
+  "description": "RK js call native method encapsulation",
+  "files": [
+    "dist/"
+  ],
+  "main": "dist/index.js",
+  "module": "dist/index.es.js",
+  "scripts": {
+    "build": "rollup -c rollup.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alleluya-young/RKBridgeHepler.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/alleluya-young/RKBridgeHepler/issues"
+  },
+  "homepage": "https://github.com/alleluya-young/RKBridgeHepler#readme"
+}
