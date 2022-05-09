@@ -6,14 +6,15 @@ const RKBridge = {
   isRKApp: () => U.indexOf('Rockontrol') > -1,
   RKAppVersion: () => U.split('Rockontrol=')[1],
   msgCallbackMap: {},
-  callbackDispatcher: function(callbackId, resultjson) {
-    let handler = RKBridge.msgCallbackMap[callbackId];
+  eventCallMap: {},
+  callbackDispatcher: function (callbackId, resultjson) {
+    const handler = RKBridge.msgCallbackMap[callbackId];
     if (handler && typeof handler === 'function') {
-      let resultObj = resultjson ? JSON.parse(resultjson) : {};
+      const resultObj = resultjson ? JSON.parse(resultjson) : {};
       handler(resultObj);
     }
   },
-  getNextCallbackID: function() {
+  getNextCallbackID: function () {
     const timeStamp = new Date().getTime();
     return `callbackDispatcher_${timeStamp}`;
   },
@@ -21,19 +22,14 @@ const RKBridge = {
    * JS调用Native同步返回
    * @param {*} data {moduleName,methodName,params}
    */
-  sendSyncMessage: function(data) {
-    let params = JSON.stringify(data);
+  sendSyncMessage: function (data) {
+    const params = JSON.stringify(data);
+    let resultjson;
     try {
-      if (this.isIOS()) {
-        let resultjson = prompt(params);
-        let resultObj = resultjson ? JSON.parse(resultjson) : {};
-        return resultObj;
-      }
-      if (this.isAndroid()) {
-        let resultjson = window.RKBridge && window.RKBridge.distributeMessage(params);
-        let resultObj = resultjson ? JSON.parse(resultjson) : {};
-        return resultObj;
-      }
+      if (this.isIOS()) resultjson = prompt(params);
+      if (this.isAndroid()) resultjson = window.RKBridge && window.RKBridge.distributeMessage(params);
+      const resultObj = resultjson ? JSON.parse(resultjson) : {};
+      return resultObj;
     } catch (err) {
       throw 'error';
     }
@@ -43,14 +39,14 @@ const RKBridge = {
    * @param {*} data {moduleName,methodName,params,callbackId,callbackFunction }
    * @param {*} callback
    */
-  sendAsyncMessage: function(data, callback) {
+  sendAsyncMessage: function (data, callback) {
     if (callback && typeof callback === 'function') {
-      let callbackId = this.getNextCallbackID();
+      const callbackId = this.getNextCallbackID();
       this.msgCallbackMap[callbackId] = callback;
       data.callbackId = callbackId;
       data.callbackFunction = 'window.callbackDispatcher';
     }
-    let params = JSON.stringify(data);
+    const params = JSON.stringify(data);
     if (this.isIOS()) {
       try {
         window.webkit.messageHandlers.distributeMessage.postMessage(params);
@@ -68,11 +64,11 @@ const RKBridge = {
     }
   },
   /**
-   * JS接手Native 备用
+   * JS接收Native 备用
    * @param {*} methodName
    * @param {*} callback
    */
-  onReceive: function(methodName, callback) {
+  onReceive: function (methodName, callback) {
     window.RKBridge[methodName] = callback;
   },
 };
